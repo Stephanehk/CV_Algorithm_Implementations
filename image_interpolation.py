@@ -5,7 +5,15 @@ img = cv2.imread("/Users/2020shatgiskessell/Downloads/test_img.png")
 roi = img[200:600, 800:1200]
 #img[200:600, 800:1200]
 #img[200:210, 800:810]
-#img[200:600, 800:1200]
+
+def basic_int (matrix):
+    for i in range (len(matrix)):
+        for j in range(len(matrix[0])):
+            if np.sum(matrix[i][j]) == 0:
+                matrix[i][j] = prev
+            else:
+                prev = matrix[i][j]
+    return matrix
 
 def get_uninterpolated_scaled_img(roi, scale_factor):
     #isolate each image channel
@@ -23,8 +31,9 @@ def get_uninterpolated_scaled_img(roi, scale_factor):
     #add channels back together
     zoomed_no_int_bgr = cv2.merge([zoomed_no_int_b, zoomed_no_int_g, zoomed_no_int_r])
     zoomed_no_int_bgr = np.array(zoomed_no_int_bgr, dtype=np.uint8)
-    return zoomed_no_int_bgr
+    basic_int_img = basic_int (zoomed_no_int_bgr)
+    return basic_int_img
 
-zoomed_no_int_bgr = get_uninterpolated_scaled_img(roi, 3)
+zoomed_no_int_bgr = get_uninterpolated_scaled_img(roi, 2)
 cv2.imshow("roi_zoomed", zoomed_no_int_bgr)
 cv2.waitKey(0)
