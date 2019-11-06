@@ -1,8 +1,8 @@
 import numpy as np
 import cv2
 
-img = cv2.imread("/Users/2020shatgiskessell/Downloads/test_img.png")
-roi = img[200:600, 800:1200]
+# img = cv2.imread("/Users/2020shatgiskessell/Downloads/test_img.png")
+# roi = img[200:210, 800:810]
 #img[200:600, 800:1200]
 #img[200:210, 800:810]
 
@@ -22,7 +22,7 @@ def get_uninterpolated_scaled_img(roi, scale_factor):
     g = roi[...,1]
     r = roi[...,2]
     #create Kronecker product kernel
-    kron_kernel = np.zeros((scale_factor, scale_factor))
+    kron_kernel = np.zeros((int(scale_factor), int(scale_factor)))
     kron_kernel[0][0] = 1
     #calculate Kronecker product for each channel
     zoomed_no_int_b = np.kron(b, kron_kernel)
@@ -31,9 +31,18 @@ def get_uninterpolated_scaled_img(roi, scale_factor):
     #add channels back together
     zoomed_no_int_bgr = cv2.merge([zoomed_no_int_b, zoomed_no_int_g, zoomed_no_int_r])
     zoomed_no_int_bgr = np.array(zoomed_no_int_bgr, dtype=np.uint8)
-    basic_int_img = basic_int (zoomed_no_int_bgr)
-    return basic_int_img
 
-zoomed_no_int_bgr = get_uninterpolated_scaled_img(roi, 2)
-cv2.imshow("roi_zoomed", zoomed_no_int_bgr)
-cv2.waitKey(0)
+    #get all uninterpolated and old pixel cords
+    unint_pixels = np.where(zoomed_no_int_bgr == [0,0,0])
+    old_pixels = np.where(zoomed_no_int_bgr != 0)
+
+    #get everything in correct format
+    unint_pixel_cords = set(zip(unint_pixels[0], unint_pixels[1]))
+    unint_pixel_cords = [list(pixel) for pixel in unint_pixel_cords]
+    old_pixel_cords = set(zip(old_pixels[0], old_pixels[1]))
+    old_pixel_cords = [list(pixel) for pixel in old_pixel_cords]
+    return zoomed_no_int_bgr, unint_pixel_cords, old_pixel_cords
+
+# zoomed_no_int_bgr, _, _ = get_uninterpolated_scaled_img(roi, 2)
+# # cv2.imshow("roi_zoomed", zoomed_no_int_bgr)
+# # cv2.waitKey(0)
