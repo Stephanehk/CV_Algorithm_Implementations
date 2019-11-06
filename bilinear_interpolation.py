@@ -6,7 +6,7 @@ from scipy.spatial import KDTree
 import map_resized_cords
 
 img = cv2.imread("/Users/2020shatgiskessell/Downloads/test_img.png")
-img = cv2.resize(img, (4,4))
+img = cv2.resize(img, (100,100))
 
 def match_coordinates_coefs(img, target_size):
     #TODO: IDK HOW MUCH OF THIS HOLDS TRUE FOR OTHER IMAGE DIMENSIONS
@@ -34,6 +34,7 @@ def old_cords2new_cords(x,a,b):
     return (a*x) + b
 
 def bilinear_interpolate (img, target_size):
+    og_img = img
     # #TODO: ADD IMAGE PADDING
     # a_old_pixel_cords = []
     # a_new_pixel_cords = []
@@ -90,17 +91,24 @@ def bilinear_interpolate (img, target_size):
         q1_point_d = np.linalg.norm(point - q2_cords)
         q2_point_d = np.linalg.norm(point - q1_cords)
 
-        new_point_val = (q1_point_d * q1[0] + q2_point_d*q2[0], q1_point_d * q1[1] + q2_point_d*q2[1], q1_point_d * q1[2] + q2_point_d*q2[2])
+        new_point_val = (int(q1_point_d * q1[0] + q2_point_d*q2[0]), int(q1_point_d * q1[1] + q2_point_d*q2[1]), int(q1_point_d * q1[2] + q2_point_d*q2[2]))
         new_points[tuple(point)] = new_point_val
 
     #add old pixels to dictionary
     for point in a_old_pixel_cords:
-        new_points[tuple(point)] = img[point]
+        x,y = point
+        new_points[tuple(point)] = img[x][y]
 
     #reconstruct image from dictionary
+    resized_image = np.zeros((dif_h, dif_w,3),np.uint8)
     coordinates = list(new_points.keys())
     coordinates = sorted(coordinates, key = lambda tup: tup[1])
     coordinates = sorted(coordinates, key = lambda tup: tup[0])
-    print (coordinates)
+    for cords in coordinates:
+        x,y = cords
+        resized_image[x][y] = list(new_points.get(cords))
+    cv2.imshow("resized_image", resized_image)
+    cv2.imshow("og_img", og_img)
+    cv2.waitKey(0)
 
-bilinear_interpolate (img, (8,8))
+bilinear_interpolate (img, (200,200))
