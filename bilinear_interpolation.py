@@ -6,6 +6,7 @@ from scipy.spatial import KDTree
 import map_resized_cords
 
 img = cv2.imread("/Users/2020shatgiskessell/Downloads/test_img.png")
+#img = cv2.imread("/Users/2020shatgiskessell/Downloads/300px-Flag_of_Libya_(1977–2011).svg.png")
 img = cv2.resize(img, (50,50))
 
 def match_coordinates_coefs(img, target_size):
@@ -55,7 +56,7 @@ def bilinear_interpolate (img, target_size):
     #         a_new_pixel_cords.append(new_img_cords)
 
     dif_h, dif_w = target_size
-    img, a_new_pixel_cords, a_old_pixel_cords = map_resized_cords.get_uninterpolated_scaled_img(img, dif_h/h)
+    img, a_new_pixel_cords, a_old_pixel_cords = map_resized_cords.get_uninterpolated_scaled_img(img, (dif_h/h, dif_w/w))
     #--------------------------PLOT-------------
     fig=plt.figure(figsize=(10,10))
     plt.scatter([x[0] for x in a_old_pixel_cords], [x[1] for x in a_old_pixel_cords],color="r")
@@ -81,21 +82,34 @@ def bilinear_interpolate (img, target_size):
 
         #get distances to figure out how much of r,g,b should be in q1 and q2
         #SOMETHING WRONG WITH DISTANCES BEING USED
-        q1_d_1 = (np.linalg.norm(q1_cords - closest_pixels[1]))/2
-        q1_d_2 = (np.linalg.norm(q1_cords - closest_pixels[0]))/2
-        q2_d_1 = (np.linalg.norm(q2_cords - closest_pixels[3]))/2
-        q2_d_2 = (np.linalg.norm(q2_cords - closest_pixels[2]))/2
+        q1_d_1 = 0.5
+        # (np.linalg.norm(q1_cords - closest_pixels[1]))/2
+        q1_d_2 = 0.5
+        #(np.linalg.norm(q1_cords - closest_pixels[0]))/2
+        q2_d_1 = 0.5
+        #(np.linalg.norm(q2_cords - closest_pixels[3]))/2
+        q2_d_2 = 0.5
+        #(np.linalg.norm(q2_cords - closest_pixels[2]))/2
+
+        #get distance from q1 and q2 to new point
+        q1_point_d = 0.5
+        #(np.linalg.norm(point - q2_cords))/2
+        q2_point_d = 0.5
+        #(np.linalg.norm(point - q1_cords))/2
+
 
         q1 = [q1_d_1*img[closest_pixels[0][0], closest_pixels[0][1]][0] + q1_d_2*img[closest_pixels[1][0], closest_pixels[1][1]][0], q1_d_1*img[closest_pixels[0][0], closest_pixels[0][1]][1] + q1_d_2*img[closest_pixels[1][0], closest_pixels[1][1]][1], q1_d_1*img[closest_pixels[0][0], closest_pixels[0][1]][2] + q1_d_2*img[closest_pixels[0][0], closest_pixels[1][1]][2]]
         q2 = [q2_d_1*img[closest_pixels[2][0], closest_pixels[2][1]][0] + q2_d_2*img[closest_pixels[3][0], closest_pixels[3][1]][0], q2_d_1*img[closest_pixels[2][0], closest_pixels[2][1]][1] + q2_d_2*img[closest_pixels[3][0], closest_pixels[3][1]][1], q2_d_1*img[closest_pixels[2][0], closest_pixels[2][1]][2] + q2_d_2*img[closest_pixels[3][0], closest_pixels[3][1]][2]]
         #interpolate point
-        #get distance from q1 and q2 to new point
-        q1_point_d = (np.linalg.norm(point - q2_cords))/2
-        q2_point_d = (np.linalg.norm(point - q1_cords))/2
-
         new_point_val = (int(q1_point_d * q1[0] + q2_point_d*q2[0]), int(q1_point_d * q1[1] + q2_point_d*q2[1]), int(q1_point_d * q1[2] + q2_point_d*q2[2]))
         new_points[tuple(point)] = new_point_val
-        if point == [1,3]:
+        if point == [2,1]:
+            print (q1_d_1)
+            print (q1_d_2)
+            print (q2_d_1)
+            print (q2_d_2)
+            print (q1_point_d)
+            print (q2_point_d)
             print (new_point_val)
     #add old pixels to dictionary
     for point in a_old_pixel_cords:
@@ -110,9 +124,8 @@ def bilinear_interpolate (img, target_size):
     for cords in coordinates:
         x,y = cords
         resized_image[x][y] = list(new_points.get(cords))
+
     cv2.imwrite("resized_image.png", resized_image)
     cv2.imwrite("no_int_resized_image.png", img)
-    #cv2.imshow("og_img", og_img)
-    #cv2.waitKey(0)
 
-bilinear_interpolate (img, (100,100))
+bilinear_interpolate (img, (200,200))
