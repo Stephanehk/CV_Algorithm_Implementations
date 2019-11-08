@@ -1,11 +1,11 @@
 import numpy as np
 import cv2
 
-# img = cv2.imread("/Users/2020shatgiskessell/Downloads/test_img.png")
-# roi = cv2.resize(img,(50,50))
+img = cv2.imread("/Users/2020shatgiskessell/Downloads/test_img.png")
+roi = cv2.resize(img,(50,50))
 
 # img = cv2.imread("/Users/2020shatgiskessell/Downloads/test_img.png")
-# roi = img[200:210, 800:810]
+#roi = img[200:210, 800:810]
 #img[200:600, 800:1200]
 #img[200:210, 800:810]
 
@@ -49,7 +49,7 @@ def get_uninterpolated_scaled_img(roi, scale_factor):
     print ("2")
     return zoomed_no_int_bgr, unint_pixel_cords, old_pixel_cords
 
-# zoomed_no_int_bgr, _, _ = get_uninterpolated_scaled_img(roi, (75, 75))
+#zoomed_no_int_bgr, _, _ = get_uninterpolated_scaled_img(roi, (1, 1))
 # cv2.imshow("roi_zoomed", zoomed_no_int_bgr)
 # cv2.imshow("roi", roi)
 # cv2.waitKey(0)

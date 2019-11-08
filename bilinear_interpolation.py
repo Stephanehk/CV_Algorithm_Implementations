@@ -5,9 +5,11 @@ from scipy.spatial import KDTree
 
 import map_resized_cords
 
-img = cv2.imread("/Users/2020shatgiskessell/Downloads/test_img.png")
+#/Users/2020shatgiskessell/Desktop/Image_Interpolation/test_image_2.png
+#"/Users/2020shatgiskessell/Downloads/test_img.png"
+img = cv2.imread("/Users/2020shatgiskessell/Desktop/Image_Interpolation/test_image_2.png")
 #img = cv2.imread("/Users/2020shatgiskessell/Downloads/300px-Flag_of_Libya_(1977–2011).svg.png")
-img = cv2.resize(img, (50,50))
+img = cv2.resize(img, (200,300))
 
 def match_coordinates_coefs(img, target_size):
     #TODO: IDK HOW MUCH OF THIS HOLDS TRUE FOR OTHER IMAGE DIMENSIONS
@@ -62,7 +64,6 @@ def bilinear_interpolate (img, target_size):
     plt.scatter([x[0] for x in a_old_pixel_cords], [x[1] for x in a_old_pixel_cords],color="r")
     plt.scatter([x[0] for x in a_new_pixel_cords], [x[1] for x in a_new_pixel_cords], color = "b")
     plt.savefig("new_vs_old_cords.png")
-
     new_points = {}
     #build KDTree of old pixel cords
     tree = KDTree(a_old_pixel_cords)
@@ -96,21 +97,12 @@ def bilinear_interpolate (img, target_size):
         #(np.linalg.norm(point - q2_cords))/2
         q2_point_d = 0.5
         #(np.linalg.norm(point - q1_cords))/2
-
-
         q1 = [q1_d_1*img[closest_pixels[0][0], closest_pixels[0][1]][0] + q1_d_2*img[closest_pixels[1][0], closest_pixels[1][1]][0], q1_d_1*img[closest_pixels[0][0], closest_pixels[0][1]][1] + q1_d_2*img[closest_pixels[1][0], closest_pixels[1][1]][1], q1_d_1*img[closest_pixels[0][0], closest_pixels[0][1]][2] + q1_d_2*img[closest_pixels[0][0], closest_pixels[1][1]][2]]
         q2 = [q2_d_1*img[closest_pixels[2][0], closest_pixels[2][1]][0] + q2_d_2*img[closest_pixels[3][0], closest_pixels[3][1]][0], q2_d_1*img[closest_pixels[2][0], closest_pixels[2][1]][1] + q2_d_2*img[closest_pixels[3][0], closest_pixels[3][1]][1], q2_d_1*img[closest_pixels[2][0], closest_pixels[2][1]][2] + q2_d_2*img[closest_pixels[3][0], closest_pixels[3][1]][2]]
         #interpolate point
         new_point_val = (int(q1_point_d * q1[0] + q2_point_d*q2[0]), int(q1_point_d * q1[1] + q2_point_d*q2[1]), int(q1_point_d * q1[2] + q2_point_d*q2[2]))
         new_points[tuple(point)] = new_point_val
-        if point == [2,1]:
-            print (q1_d_1)
-            print (q1_d_2)
-            print (q2_d_1)
-            print (q2_d_2)
-            print (q1_point_d)
-            print (q2_point_d)
-            print (new_point_val)
+
     #add old pixels to dictionary
     for point in a_old_pixel_cords:
         x,y = point
@@ -128,4 +120,4 @@ def bilinear_interpolate (img, target_size):
     cv2.imwrite("resized_image.png", resized_image)
     cv2.imwrite("no_int_resized_image.png", img)
 
-bilinear_interpolate (img, (200,200))
+bilinear_interpolate (img, (400,600))
