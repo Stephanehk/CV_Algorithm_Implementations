@@ -9,7 +9,7 @@ import map_resized_cords
 #"/Users/2020shatgiskessell/Downloads/test_img.png"
 img = cv2.imread("/Users/2020shatgiskessell/Desktop/Image_Interpolation/test_image_2.png")
 #img = cv2.imread("/Users/2020shatgiskessell/Downloads/300px-Flag_of_Libya_(1977–2011).svg.png")
-img = cv2.resize(img, (200,300))
+img = cv2.resize(img, (300,300))
 
 def match_coordinates_coefs(img, target_size):
     #TODO: IDK HOW MUCH OF THIS HOLDS TRUE FOR OTHER IMAGE DIMENSIONS
@@ -120,4 +120,4 @@ def bilinear_interpolate (img, target_size):
     cv2.imwrite("resized_image.png", resized_image)
     cv2.imwrite("no_int_resized_image.png", img)
 
-bilinear_interpolate (img, (400,600))
+bilinear_interpolate (img, (600,600))
