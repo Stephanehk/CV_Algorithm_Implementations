@@ -42,4 +42,4 @@ def corner_detector (img, block_size, thresh, k):
     cv2.imshow("img_with_corners", img)
     cv2.waitKey(0)
     return corners
-corner_detector (img, 2, 0.00001, 0.04)
+corner_detector (img, 10, 0.00001, 0.04)
